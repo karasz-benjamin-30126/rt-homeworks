@@ -3,20 +3,7 @@ package ssatr.device;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-/**
- * Punctul de pornire al simulatorului de device.
- *
- * Rulare:  mvn -q compile exec:java -Dexec.args="device-1"
- * Pentru mai multe device-uri, porniți programul de mai multe ori, cu ID-uri diferite.
- *
- * Structura aplicației:
- *
- *   PeriodicTelemetryTask --(alarmEvents)--> SporadicAlarmTask
- *          |                                        |
- *          +---- telemetry ---> MQTT <--- alarm ----+
- *                                |
- *                            commands ---(commands)--> AperiodicCommandTask ---> status
- */
+
 public class DeviceSimulator {
 
     public static void main(String[] args) throws Exception {
@@ -29,7 +16,8 @@ public class DeviceSimulator {
         mqtt.connect();
 
         // cozile prin care comunică taskurile
-        BlockingQueue<Double> alarmEvents = new LinkedBlockingQueue<>();
+        // evenimentele de alarmă poartă temperatura, pragul și momentul sosirii (vezi AlarmEvent)
+        BlockingQueue<AlarmEvent> alarmEvents = new LinkedBlockingQueue<>();
         BlockingQueue<String> commands = new LinkedBlockingQueue<>();
 
         // comenzile primite pe MQTT ajung direct în coada commands

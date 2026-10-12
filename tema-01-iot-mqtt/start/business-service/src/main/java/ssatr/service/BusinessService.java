@@ -3,17 +3,7 @@ package ssatr.service;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-/**
- * Punctul de pornire al serviciului business.
- *
- * Rulare:  mvn -q compile exec:java
- *
- * Serviciul:
- *  - primește telemetria, alarmele și confirmările de la toate device-urile;
- *  - le stochează în fișiere CSV (CsvStorage);
- *  - păstrează ultima stare a fiecărui device (Dashboard);
- *  - citește comenzi de la tastatură și le trimite device-urilor (CommandConsole).
- */
+
 public class BusinessService {
 
     public static void main(String[] args) throws Exception {

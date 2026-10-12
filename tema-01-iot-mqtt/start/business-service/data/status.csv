@@ -1,0 +1,4 @@
+deviceId;timestamp;text
+device-1;1791738215680;OK STATUS interval=2000 threshold=28.00
+device-2;1791738282746;OK STATUS interval=2000 threshold=28.00
+device-1;1791738287703;OK STATUS interval=2000 threshold=28.00

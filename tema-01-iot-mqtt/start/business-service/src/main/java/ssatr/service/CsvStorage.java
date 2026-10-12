@@ -5,17 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-/**
- * Stocarea mesajelor în fișiere CSV (clasă gata implementată).
- *
- * Fiecare tip de mesaj are fișierul lui:
- *   data/telemetry.csv   deviceId;timestamp;temperatura
- *   data/alarm.csv       deviceId;timestamp;temperatura;prag
- *   data/status.csv      deviceId;timestamp;text
- *
- * Separatorul este ";", la fel ca în mesajele MQTT, deci mesajul se scrie
- * exact așa cum a sosit.
- */
+
 public class CsvStorage {
 
     private final Path directory;
@@ -24,16 +14,7 @@ public class CsvStorage {
         this.directory = Path.of(directory);
     }
 
-    /**
-     * Adaugă un mesaj la sfârșitul fișierului kind.csv.
-     *
-     * @param kind    "telemetry", "alarm" sau "status"
-     * @param message mesajul primit pe MQTT, nemodificat
-     *
-     * Metoda este apelată din mai multe thread-uri (câte un MessageProcessor
-     * pentru fiecare tip de mesaj). Este synchronized, ca două thread-uri să nu
-     * scrie în același timp și să nu se amestece liniile.
-     */
+
     public synchronized void append(String kind, String message) {
         Path file = directory.resolve(kind + ".csv");
         try {

@@ -1,0 +1,31 @@
+---
+title: "Scenariul 2: operatorul trimite SET_INTERVAL, device-ul confirmă"
+---
+sequenceDiagram
+    autonumber
+    actor O as Operator
+    participant C as CommandConsole<br/>(business-service)
+    participant B as Broker MQTT
+    participant Q as coada commands<br/>(device-1)
+    participant A as AperiodicCommandTask<br/>(task aperiodic)
+    participant P as PeriodicTelemetryTask<br/>(task periodic)
+    participant M as MessageProcessor<br/>(business-service)
+    participant D as Dashboard
+
+    O->>C: "device-1 SET_INTERVAL 1000"
+    Note over C: separă deviceId de comandă
+    C-)B: publish .../devices/device-1/commands<br/>"SET_INTERVAL 1000"
+    C-->>O: ">>> trimis la device-1"
+    B-)Q: mesaj pe topicul commands (MqttConnection)
+    Q-)A: take() → eliberarea unui job aperiodic
+    Note over A: parsează și validează<br/>(100 ≤ ms ≤ 60000)
+    alt comandă validă
+        A->>P: setPeriodMs(1000)
+        Note over P: noua perioadă se aplică<br/>de la eliberarea următoare
+        A-)B: publish status<br/>"device-1#59;t#59;OK SET_INTERVAL 1000"
+    else comandă sau parametru invalid
+        A-)B: publish status<br/>"device-1#59;t#59;ERROR ..."
+    end
+    B-)M: status
+    M->>D: updateStatus("device-1", text)
+    M-->>O: afișează imediat "<<< device-1: OK SET_INTERVAL 1000"

@@ -1,0 +1,36 @@
+---
+title: "Scenariul 1: telemetrie peste prag → alarmă"
+---
+sequenceDiagram
+    autonumber
+    participant S as TemperatureSensor
+    participant P as PeriodicTelemetryTask<br/>(task periodic)
+    participant Q as coada alarmEvents
+    participant A as SporadicAlarmTask<br/>(task sporadic)
+    participant B as Broker MQTT
+    participant M as MessageProcessor<br/>(business-service)
+    participant CSV as CsvStorage
+    participant D as Dashboard
+
+    Note over P: eliberare r_k = r_0 + k·T<br/>(așteptare absolută)
+    P->>S: read()
+    S-->>P: 29.42
+    P-)B: publish telemetry<br/>"device-1#59;t#59;29.42"
+    B-)M: telemetry (abonare cu +)
+    M->>CSV: append("telemetry", mesaj)
+    M->>D: updateTelemetry("device-1", 29.42)
+    Note over P: 29.42 > prag 28.0
+    P-)Q: put(AlarmEvent(29.42, 28.0, t_sosire))
+    Note over P: jobul k se termină,<br/>așteaptă r_k+1
+    Q-)A: take()
+    alt au trecut ≥ 5000 ms de la ultima eliberare
+        Note over A: eliberare acceptată
+        A-)B: publish alarm<br/>"device-1#59;t#59;29.42#59;28.00"
+        Note over A: verifică R ≤ D (500 ms)
+        B-)M: alarm
+        M->>CSV: append("alarm", mesaj)
+        M->>D: updateAlarm("device-1", 29.42)
+        Note over M: afișează imediat<br/>"!!! ALARMĂ device-1 ..."
+    else au trecut < 5000 ms
+        Note over A: eveniment RESPINS<br/>(nu se publică nimic)
+    end

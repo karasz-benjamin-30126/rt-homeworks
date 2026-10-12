@@ -2,12 +2,7 @@ package ssatr.device;
 
 import java.util.Random;
 
-/**
- * Senzor de temperatură simulat (clasă gata implementată).
- *
- * Valoarea se modifică puțin la fiecare citire. Din când în când apare un
- * vârf de temperatură, ca să se poată declanșa alarme.
- */
+
 public class TemperatureSensor {
 
     private static final double INITIAL = 22.0;
