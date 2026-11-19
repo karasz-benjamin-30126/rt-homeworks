@@ -1,0 +1,6 @@
+ssatr\semafor\DeviceState$Lights.class
+ssatr\semafor\DeviceState.class
+ssatr\semafor\SemaforDashboard.class
+ssatr\semafor\LightsPanel.class
+ssatr\semafor\Config.class
+ssatr\semafor\MqttConnection.class
