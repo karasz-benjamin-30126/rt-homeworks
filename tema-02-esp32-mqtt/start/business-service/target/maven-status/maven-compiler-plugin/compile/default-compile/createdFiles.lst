@@ -1,0 +1,8 @@
+ssatr\service\CommandConsole.class
+ssatr\service\Dashboard.class
+ssatr\service\Config.class
+ssatr\service\CsvStorage.class
+ssatr\service\MqttConnection.class
+ssatr\service\Dashboard$DeviceState.class
+ssatr\service\BusinessService.class
+ssatr\service\MessageProcessor.class

@@ -44,12 +44,37 @@ public class CommandConsole implements Runnable {
     }
 
     private void sendCommand(String line) {
-        // TODO 6: separați deviceId de restul liniei
-        //   ("device-1 SET_INTERVAL 1000" -> "device-1" și "SET_INTERVAL 1000")
-        //   și publicați comanda pe Config.commandTopic(deviceId).
-        //   Afișați un mesaj de eroare dacă linia nu are formatul corect.
-        System.out.println("(trimiterea comenzilor neimplementată): " + line);
+        // "device-1 SET_INTERVAL 1000" -> "device-1" și "SET_INTERVAL 1000"
+        String[] parts = line.split("\\s+", 2);
+        if (parts.length < 2 || parts[1].isBlank()) {
+            System.out.println("Format greșit. Folosiți: <deviceId> <COMANDA> [parametru], de exemplu device-1 STATUS");
+            return;
+        }
+
+        String deviceId = parts[0];
+        if (deviceId.contains("/") || deviceId.contains("+") || deviceId.contains("#")) {
+            System.out.println("ID de device invalid: " + deviceId);
+            return;
+        }
+
+        // spațiile multiple devin unul singur; numele comenzii cu litere mari
+        String[] words = parts[1].trim().split("\\s+");
+        words[0] = words[0].toUpperCase();
+        String command = String.join(" ", words);
+
+        if (!KNOWN_COMMANDS.contains(words[0])) {
+            System.out.println("Atenție: " + words[0] + " nu este o comandă cunoscută; o trimit oricum, device-ul va răspunde cu ERROR.");
+        }
+        if (!dashboard.knows(deviceId)) {
+            System.out.println("Atenție: " + deviceId + " nu a trimis încă niciun mesaj (verificați ID-ul cu show).");
+        }
+
+        mqtt.publish(Config.commandTopic(deviceId), command);
+        System.out.println("Trimis către " + deviceId + ": " + command);
     }
+
+    private static final java.util.Set<String> KNOWN_COMMANDS =
+            java.util.Set.of("SET_INTERVAL", "SET_THRESHOLD", "RESET", "STATUS");
 
     private void printHelp() {
         System.out.println("Comenzi: show | <deviceId> SET_INTERVAL <ms> | <deviceId> SET_THRESHOLD <valoare>");
