@@ -1,0 +1,5 @@
+ssatr\semafor\Config.class
+ssatr\semafor\MqttConnection$Message.class
+ssatr\semafor\WebDashboard.class
+ssatr\semafor\WebDashboard$Page.class
+ssatr\semafor\MqttConnection.class
